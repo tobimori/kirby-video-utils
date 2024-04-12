@@ -7,6 +7,10 @@ namespace Composer\Autoload;
 class ComposerStaticInitf67c0953850d6fd5b170cf94817f1f9a
 {
     public static $prefixLengthsPsr4 = array (
+        't' => 
+        array (
+            'tobimori\\VideoUtils\\' => 20,
+        ),
         'S' => 
         array (
             'Symfony\\Contracts\\Service\\' => 26,
@@ -41,6 +45,10 @@ class ComposerStaticInitf67c0953850d6fd5b170cf94817f1f9a
     );
 
     public static $prefixDirsPsr4 = array (
+        'tobimori\\VideoUtils\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/classes',
+        ),
         'Symfony\\Contracts\\Service\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/service-contracts',
@@ -355,6 +363,7 @@ class ComposerStaticInitf67c0953850d6fd5b170cf94817f1f9a
         'Symfony\\Contracts\\Service\\ServiceProviderInterface' => __DIR__ . '/..' . '/symfony/service-contracts/ServiceProviderInterface.php',
         'Symfony\\Contracts\\Service\\ServiceSubscriberInterface' => __DIR__ . '/..' . '/symfony/service-contracts/ServiceSubscriberInterface.php',
         'Symfony\\Contracts\\Service\\ServiceSubscriberTrait' => __DIR__ . '/..' . '/symfony/service-contracts/ServiceSubscriberTrait.php',
+        'tobimori\\VideoUtils\\Video' => __DIR__ . '/../..' . '/classes/Video.php',
         '©' => __DIR__ . '/..' . '/symfony/cache/Traits/ValueWrapper.php',
     );
 
