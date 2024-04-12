@@ -5,9 +5,12 @@ namespace tobimori\VideoUtils;
 use FFMpeg\Coordinate\TimeCode;
 use FFMpeg\FFMpeg;
 use FFMpeg\FFProbe;
+use FFMpeg\Format\Video\DefaultVideo;
+use FFMpeg\Format\Video\X264;
 use FFMpeg\Media\Video as FFMpegVideo;
 use Kirby\Cms\File;
 use Kirby\Filesystem\F;
+use Kirby\Uuid\Uuid;
 
 /**
  * The Video class enriches the File class with video-specific methods
@@ -78,7 +81,7 @@ class Video extends File
 	/**
 	 * A thumbnail from the first second of the video
 	 */
-	public function thumbnail(): File
+	public function thumbnail(): VideoThumbnail
 	{
 		$thumbnail = new VideoThumbnail([
 			'filename' => F::filename($path = $this->root() . '.jpg'),
@@ -94,6 +97,29 @@ class Video extends File
 		return $thumbnail;
 	}
 
+	/**
+	 * Transcode the video to a different format
+	 */
+	public function transcodeTo(DefaultVideo $format = null, string $ext = 'mp4'): static
+	{
+		$transcode = new static([
+			'filename' => F::filename($path = "{$this->root()}.{$ext}"),
+			'parent' => $this->parent(),
+			'root' => $path,
+			'template' => $this->template(),
+			'url' => $this->url()
+		]);
+
+		if ($transcode->exists()) {
+			return $transcode;
+		}
+
+		$format ??= X264::class;
+		$format = new $format();
+
+		$this->openVideo()->save($format, $path);
+		return $transcode;
+	}
 
 	/**
 	 * Create a Video class from a File object
@@ -107,5 +133,18 @@ class Video extends File
 			'template' => $file->template(),
 			'url' => $file->url()
 		]);
+	}
+
+	/**
+	 * Returns the model's UUID
+	 * Disable UUIDs for transcoded files to avoid creating a new content file
+	 */
+	public function uuid(): ?Uuid
+	{
+		if ($this->exists()) {
+			return parent::uuid();
+		}
+
+		return null;
 	}
 }
