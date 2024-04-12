@@ -7,7 +7,6 @@ use FFMpeg\FFMpeg;
 use FFMpeg\FFProbe;
 use FFMpeg\Media\Video as FFMpegVideo;
 use Kirby\Cms\File;
-use Kirby\Filesystem\Asset;
 use Kirby\Filesystem\F;
 
 /**
@@ -78,18 +77,21 @@ class Video extends File
 
 	/**
 	 * A thumbnail from the first second of the video
-	 *
-	 * TODO: clear on replace, video update, etc.?
 	 */
-	public function thumbnail(): Asset
+	public function thumbnail(): File
 	{
-		$asset = $this->root() . '.jpg';
-		if (F::exists($asset)) {
-			return new Asset($asset);
+		$thumbnail = new VideoThumbnail([
+			'filename' => F::filename($path = $this->root() . '.jpg'),
+			'parent' => $this->parent(),
+			'root' => $path,
+		]);
+
+		if ($thumbnail->exists()) {
+			return $thumbnail;
 		}
 
-		$this->openVideo()->frame(TimeCode::fromSeconds(1))->save($asset);
-		return new Asset($asset);
+		$this->openVideo()->frame(TimeCode::fromSeconds(1))->save($path);
+		return $thumbnail;
 	}
 
 
