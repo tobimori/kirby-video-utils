@@ -31,7 +31,7 @@ App::plugin('tobimori/video-utils', [
 				if (is_string($id) === true && $file = $parent->kirby()->file($id, $parent)) {
 					$files->add($file->toVideo());
 				}
-			}
+			};
 
 			return $files;
 		},
@@ -40,8 +40,8 @@ App::plugin('tobimori/video-utils', [
 		/**
 		 * Returns a video object from a file
 		 */
-		'toVideo' => function (File $file): Video {
-			return Video::from($file);
+		'toVideo' => function (): Video {
+			return Video::from($this);
 		},
 	]
 ]);

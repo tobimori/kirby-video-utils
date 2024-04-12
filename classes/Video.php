@@ -2,9 +2,13 @@
 
 namespace tobimori\VideoUtils;
 
+use FFMpeg\Coordinate\TimeCode;
 use FFMpeg\FFMpeg;
 use FFMpeg\FFProbe;
+use FFMpeg\Media\Video as FFMpegVideo;
 use Kirby\Cms\File;
+use Kirby\Filesystem\Asset;
+use Kirby\Filesystem\F;
 
 /**
  * The Video class enriches the File class with video-specific methods
@@ -25,6 +29,11 @@ class Video extends File
 	protected function ffprobe(): FFProbe
 	{
 		return $this->ffmpeg()->getFFProbe();
+	}
+
+	protected function openVideo(): FFMpegVideo
+	{
+		return $this->ffmpeg()->open($this->root());
 	}
 
 	/**
@@ -68,9 +77,26 @@ class Video extends File
 	}
 
 	/**
+	 * A thumbnail from the first second of the video
+	 *
+	 * TODO: clear on replace, video update, etc.?
+	 */
+	public function thumbnail(): Asset
+	{
+		$asset = $this->root() . '.jpg';
+		if (F::exists($asset)) {
+			return new Asset($asset);
+		}
+
+		$this->openVideo()->frame(TimeCode::fromSeconds(1))->save($asset);
+		return new Asset($asset);
+	}
+
+
+	/**
 	 * Create a Video class from a File object
 	 */
-	public static function from(File $file)
+	public static function from(File $file): static
 	{
 		return new static([
 			'filename' => $file->filename(),
