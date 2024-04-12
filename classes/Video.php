@@ -9,6 +9,7 @@ use FFMpeg\Format\Video\DefaultVideo;
 use FFMpeg\Format\Video\X264;
 use FFMpeg\Media\Video as FFMpegVideo;
 use Kirby\Cms\File;
+use Kirby\Filesystem\Dir;
 use Kirby\Filesystem\F;
 use Kirby\Uuid\Uuid;
 
@@ -107,7 +108,6 @@ class Video extends File
 			'parent' => $this->parent(),
 			'root' => $path,
 			'template' => $this->template(),
-			'url' => $this->url()
 		]);
 
 		if ($transcode->exists()) {
@@ -119,6 +119,19 @@ class Video extends File
 
 		$this->openVideo()->save($format, $path);
 		return $transcode;
+	}
+
+	/**
+	 * Invalidate the videos transcoded files
+	 */
+	public function invalidate(): void
+	{
+		$this->dimensions = null;
+		foreach (Dir::read($this->parent()->root()) as $file) {
+			if (str_starts_with($file, $this->filename())) {
+				F::remove($this->parent()->root() . '/' . $file);
+			}
+		}
 	}
 
 	/**

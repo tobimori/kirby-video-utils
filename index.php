@@ -43,5 +43,10 @@ App::plugin('tobimori/video-utils', [
 		'toVideo' => function (): Video {
 			return Video::from($this);
 		},
+	],
+	'hooks' => [
+		'file.replace:after' => fn (File $newFile) => $newFile->toVideo()?->invalidate(),
+		'file.delete:after' => fn (bool $status, File $file) => $file->toVideo()?->invalidate(),
+		'file.changeName:after' => fn (File $newFile, File $oldFile) => $oldFile->toVideo()?->invalidate(),
 	]
 ]);
