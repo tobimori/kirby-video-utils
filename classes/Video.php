@@ -101,7 +101,7 @@ class Video extends File
 	/**
 	 * Transcode the video to a different format
 	 */
-	public function transcodeTo(DefaultVideo $format = null, string $ext = 'mp4'): static
+	public function transcodeTo(string $format = null, string $ext = 'mp4'): static
 	{
 		$transcode = new static([
 			'filename' => F::filename($path = "{$this->root()}.{$ext}"),
@@ -112,6 +112,10 @@ class Video extends File
 
 		if ($transcode->exists()) {
 			return $transcode;
+		}
+
+		if (!is_subclass_of($format, DefaultVideo::class)) {
+			throw new \Exception('Invalid FFmpeg format class');
 		}
 
 		$format ??= X264::class;
