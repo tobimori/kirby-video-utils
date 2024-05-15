@@ -114,11 +114,11 @@ class Video extends File
 			return $transcode;
 		}
 
+		$format ??= X264::class;
 		if (!is_subclass_of($format, DefaultVideo::class)) {
 			throw new \Exception('Invalid FFmpeg format class');
 		}
 
-		$format ??= X264::class;
 		$format = new $format();
 
 		$this->openVideo()->save($format, $path);
