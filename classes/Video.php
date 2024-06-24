@@ -141,8 +141,12 @@ class Video extends File
 	/**
 	 * Create a Video class from a File object
 	 */
-	public static function from(File $file): static
+	public static function from(File $file): static|null
 	{
+		if ($file->type() !== 'video') {
+			return null;
+		}
+
 		return new static([
 			'filename' => $file->filename(),
 			'parent' => $file->parent(),
