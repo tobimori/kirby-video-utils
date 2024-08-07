@@ -40,7 +40,7 @@ App::plugin('tobimori/video-utils', [
 		/**
 		 * Returns a video object from a file
 		 */
-		'toVideo' => function (): Video {
+		'toVideo' => function (): Video|null {
 			return Video::from($this);
 		},
 	],
